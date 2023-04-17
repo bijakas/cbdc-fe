@@ -1,19 +1,21 @@
-import React from "react";
+import React,{useContext} from "react";
 
 // Chakra imports
-import { Button, Flex, Link, Text } from "@chakra-ui/react";
+import {Flex, Text } from "@chakra-ui/react";
+import { AuthContext } from "../../../../AuthContext";
 
 // Assets
-import banner from "assets/img/auth/auth.png";
 
 
-export default function Banner() {
+export default function BannerParties() {
+  const { user } = useContext(AuthContext);
+
   // Chakra Color Mode
   return (
     <Flex
     align='center'
       direction='column'
-      bgImage={banner}
+      bgGradient="linear(to-l, #378ecc, #218e96)"
       bgSize='cover'
       py={{ base: "10px", md: "36px" }}
       px={{ base: "10px", md: "34px" }}
@@ -33,7 +35,7 @@ export default function Banner() {
         fontWeight='700'
         lineHeight={{ base: "32px", md: "42px" }}
         >
-        Selamat datang INDOIDJA
+        Selamat datang {user ? user.username : "nobody"}
       </Text>
       <Text
         fontSize='md'
@@ -48,7 +50,7 @@ export default function Banner() {
         }}
         fontWeight='500'
         lineHeight='28px'>
-        Sistem monitoring transaksi Digital Rupiah yang terjadi di seluruh Node
+        Sistem monitoring transaksi Digital Rupiah yang terjadi di {user ? user.username : "nobody"}
       </Text>
     </Flex>
   );

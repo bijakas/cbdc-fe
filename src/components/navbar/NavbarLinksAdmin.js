@@ -15,17 +15,25 @@ import {
 } from '@chakra-ui/react';
 // Custom Components
 import { ItemContent } from 'components/menu/ItemContent';
-import { SearchBar } from 'components/navbar/searchBar/SearchBar';
+// import { SearchBar } from 'components/navbar/searchBar/SearchBar';
 import { SidebarResponsive } from 'components/sidebar/Sidebar';
 import PropTypes from 'prop-types';
 import React from 'react';
+import  { useContext } from "react";
+
 // Assets
 import navImage from 'assets/img/layout/Navbar.png';
 import { MdNotificationsNone, MdInfoOutline } from 'react-icons/md';
-import { FaEthereum } from 'react-icons/fa';
+//import { FaEthereum } from 'react-icons/fa';
 import routes from 'routes.js';
-import { ThemeEditor } from './ThemeEditor';
+//import { ThemeEditor } from './ThemeEditor';
+import banner from "assets/img/bi/bi-logo.png";
+import { AuthContext } from "../../AuthContext";
+
+
 export default function HeaderLinks(props) {
+	const { user, logout } = useContext(AuthContext);
+
 	const { secondary } = props;
 	// Chakra Color Mode
 	const navbarIcon = useColorModeValue('gray.400', 'white');
@@ -40,7 +48,7 @@ export default function HeaderLinks(props) {
 		'14px 17px 40px 4px rgba(112, 144, 176, 0.18)',
 		'14px 17px 40px 4px rgba(112, 144, 176, 0.06)'
 	);
-	const borderButton = useColorModeValue('secondaryGray.500', 'whiteAlpha.200');
+	// const borderButton = useColorModeValue('secondaryGray.500', 'whiteAlpha.200');
 	return (
 		<Flex
 			w={{ sm: '100%', md: 'auto' }}
@@ -51,8 +59,8 @@ export default function HeaderLinks(props) {
 			p="10px"
 			borderRadius="30px"
 			boxShadow={shadow}>
-			<SearchBar mb={secondary ? { base: '10px', md: 'unset' } : 'unset'} me="10px" borderRadius="30px" />
-			<Flex
+			{/* <SearchBar mb={secondary ? { base: '10px', md: 'unset' } : 'unset'} me="10px" borderRadius="30px" /> */}
+			{/* <Flex
 				bg={ethBg}
 				display={secondary ? 'flex' : 'none'}
 				borderRadius="30px"
@@ -70,7 +78,7 @@ export default function HeaderLinks(props) {
 						ETH
 					</Text>
 				</Text>
-			</Flex>
+			</Flex> */}
 			<SidebarResponsive routes={routes} />
 			<Menu>
 				<MenuButton p="0px">
@@ -95,17 +103,17 @@ export default function HeaderLinks(props) {
 						</Text>
 					</Flex>
 					<Flex flexDirection="column">
-						<MenuItem _hover={{ bg: 'none' }} _focus={{ bg: 'none' }} px="0" borderRadius="8px" mb="10px">
-							<ItemContent info="Horizon UI Dashboard PRO" aName="Alicia" />
+						{/* <MenuItem _hover={{ bg: 'none' }} _focus={{ bg: 'none' }} px="0" borderRadius="8px" mb="10px">
+							<ItemContent info="" aName="Alicia" />
 						</MenuItem>
 						<MenuItem _hover={{ bg: 'none' }} _focus={{ bg: 'none' }} px="0" borderRadius="8px" mb="10px">
 							<ItemContent info="Horizon Design System Free" aName="Josh Henry" />
-						</MenuItem>
+						</MenuItem> */}
 					</Flex>
 				</MenuList>
 			</Menu>
 
-			<Menu>
+			{/* <Menu>
 				<MenuButton p="0px">
 					<Icon mt="6px" as={MdInfoOutline} color={navbarIcon} w="18px" h="18px" me="10px" />
 				</MenuButton>
@@ -144,17 +152,17 @@ export default function HeaderLinks(props) {
 						</Link>
 					</Flex>
 				</MenuList>
-			</Menu>
+			</Menu> */}
 
-			<ThemeEditor navbarIcon={navbarIcon} />
+			{/* <ThemeEditor navbarIcon={navbarIcon} /> */}
 
 			<Menu>
 				<MenuButton p="0px">
 					<Avatar
 						_hover={{ cursor: 'pointer' }}
+						src={banner}
 						color="white"
-						name="Adela Parkson"
-						bg="#11047A"
+						name="I D"
 						size="sm"
 						w="40px"
 						h="40px"
@@ -172,23 +180,27 @@ export default function HeaderLinks(props) {
 							fontSize="sm"
 							fontWeight="700"
 							color={textColor}>
-							👋&nbsp; Hey, Adela
+							👋&nbsp; Hey, {user ? user.username : "nobody"}
 						</Text>
 					</Flex>
 					<Flex flexDirection="column" p="10px">
-						<MenuItem _hover={{ bg: 'none' }} _focus={{ bg: 'none' }} borderRadius="8px" px="14px">
+						{/* <MenuItem _hover={{ bg: 'none' }} _focus={{ bg: 'none' }} borderRadius="8px" px="14px">
 							<Text fontSize="sm">Profile Settings</Text>
 						</MenuItem>
 						<MenuItem _hover={{ bg: 'none' }} _focus={{ bg: 'none' }} borderRadius="8px" px="14px">
 							<Text fontSize="sm">Newsletter Settings</Text>
-						</MenuItem>
+						</MenuItem> */}
 						<MenuItem
 							_hover={{ bg: 'none' }}
 							_focus={{ bg: 'none' }}
 							color="red.400"
 							borderRadius="8px"
-							px="14px">
-							<Text fontSize="sm">Log out</Text>
+							px="14px"><Link
+							onClick={() => {
+								logout()
+							} }
+							color="black" fontSize="14">Log out</Link>
+							{/* <Text fontSize="sm"></Text> */}
 						</MenuItem>
 					</Flex>
 				</MenuList>

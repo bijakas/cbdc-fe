@@ -59,16 +59,16 @@ export default function ColumnsTable(props) {
       w='100%'
       px='0px'
       overflowX={{ sm: "scroll", lg: "hidden" }}>
-      <Flex px='25px' justify='space-between' mb='20px' align='center'>
+      {/* <Flex px='25px' justify='space-between' mb='20px' align='center'>
         <Text
           color={textColor}
           fontSize='22px'
           fontWeight='700'
           lineHeight='100%'>
-          Complex Table
+          Transaction Logs
         </Text>
         <Menu />
-      </Flex>
+      </Flex> */}
       <Table {...getTableProps()} variant='simple' color='gray.500' mb='24px'>
         <Thead>
           {headerGroups.map((headerGroup, index) => (
@@ -145,14 +145,17 @@ export default function ColumnsTable(props) {
                     data = (
                       <Flex align='center'>
                         <Progress
-                          variant='table'
-                          colorScheme='brandScheme'
+                          colorScheme='#045498'
                           h='8px'
-                          w='108px'
+                          w='10px'
                           value={cell.value}
                         />
                       </Flex>
                     );
+                  } else {
+                    data =  <Text color={textColor} fontSize='sm' fontWeight='700'>
+                        {cell.value}
+                      </Text>
                   }
                   return (
                     <Td
@@ -160,6 +163,7 @@ export default function ColumnsTable(props) {
                       key={index}
                       fontSize={{ sm: "14px" }}
                       minW={{ sm: "150px", md: "200px", lg: "auto" }}
+                      maxW={{ sm: "150px", md: "200px", lg: "200px" }}
                       borderColor='transparent'>
                       {data}
                     </Td>

@@ -48,7 +48,7 @@ function AuthIllustration(props) {
               color='secondaryGray.600'
             />
             <Text ms='0px' fontSize='sm' color='secondaryGray.600'>
-              Back to Simmmple
+              Back to home
             </Text>
           </Flex>
         </NavLink>
@@ -69,11 +69,12 @@ function AuthIllustration(props) {
             bgSize='cover'
             bgPosition='50%'
             position='absolute'
-            borderBottomLeftRadius={{ lg: "120px", xl: "200px" }}></Flex>
+            
+            ></Flex>
         </Box>
         <Footer />
       </Flex>
-      <FixedPlugin />
+      {/* <FixedPlugin /> */}
     </Flex>
   );
 }

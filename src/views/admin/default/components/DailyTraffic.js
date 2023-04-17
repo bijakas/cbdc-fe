@@ -29,7 +29,7 @@ export default function DailyTraffic(props) {
               color='secondaryGray.600'
               fontSize='sm'
               fontWeight='500'>
-              Daily Traffic
+              Daily transactions
             </Text>
           </Flex>
           <Flex align='end'>
@@ -45,7 +45,7 @@ export default function DailyTraffic(props) {
               color='secondaryGray.600'
               fontSize='sm'
               fontWeight='500'>
-              Visitors
+              trx
             </Text>
           </Flex>
         </Flex>

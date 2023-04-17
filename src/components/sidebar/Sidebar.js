@@ -28,13 +28,13 @@ import { IoMenuOutline } from "react-icons/io5";
 function Sidebar(props) {
   const { routes } = props;
 
-  let variantChange = "0.2s linear";
+  let variantChange = "0.4s linear";
   let shadow = useColorModeValue(
     "14px 17px 40px 4px rgba(112, 144, 176, 0.08)",
     "unset"
   );
   // Chakra Color Mode
-  let sidebarBg = useColorModeValue("white", "navy.800");
+  let sidebarBg = '#045498';
   let sidebarMargins = "0px";
 
   // SIDEBAR

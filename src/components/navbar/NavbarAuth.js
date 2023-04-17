@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
-import React from "react";
-import { NavLink } from "react-router-dom";
+import React, { useContext} from "react";
+import { NavLink, useHistory } from "react-router-dom";
 
 // Chakra imports
 import {
@@ -29,11 +29,20 @@ import { SidebarContext } from "contexts/SidebarContext";
 
 // Assets
 import { GoChevronDown, GoChevronRight } from "react-icons/go";
-import routes from "routes.js";
+import routesAdmin from "routes.js";
+import routesParties from "routes-parties";
+import { AuthContext } from "../../AuthContext";
+
 
 export default function AuthNavbar(props) {
   const { logo, logoText, secondary, sidebarWidth, ...rest } = props;
   const { colorMode } = useColorMode();
+  const navigate = useHistory();
+  const { user } = useContext(AuthContext);
+  if (!user) {
+    navigate.push("/auth/sign-in")
+  }
+  const routes = user ? user.username === "admin" ? routesAdmin : routesParties : routesParties;
   // Menu States
   const {
     isOpen: isOpenAuth,

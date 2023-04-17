@@ -73,3 +73,53 @@ export const columnsDataComplex = [
     accessor: "progress",
   },
 ];
+
+export const columnsDataStatIndices = [
+  {
+    Header: "Settlement Summary",
+    accessor: "name",
+  },
+  {
+    Header: "Volume",
+    accessor: "volume",
+  },
+  {
+    Header: "Amount (Rp)",
+    accessor: "amount",
+  },
+];
+
+export const columnsDataMonitoring = [
+  {
+    Header: "Reference",
+    accessor: "reference",
+  },
+  {
+    Header: "Settlement Date​",
+    accessor: "settlementDate",
+  },
+  {
+    Header: "Amount",
+    accessor: "amount",
+  },
+  {
+    Header: "Currency",
+    accessor: "currency",
+  },
+  {
+    Header: "Dr Bank​",
+    accessor: "drBank",
+  },
+  {
+    Header: "Cr Bank​",
+    accessor: "crBank",
+  },
+  {
+    Header: "Tx Type​",
+    accessor: "txType",
+  },
+  {
+    Header: "Status​",
+    accessor: "status",
+  },
+];

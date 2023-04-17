@@ -1,0 +1,27 @@
+[
+  {
+    "name":"Total",
+    "volume": "4154",
+    "amount": "124.223.786.276,00"
+  },
+  {
+    "name":"Queue",
+    "volume": "2",
+    "amount": "50.000.000.000,00"
+  },
+  {
+    "name":"Settled",
+    "volume": "4152",
+    "amount": "74.223.786.276,00"
+  },
+  {
+    "name":"Gridlock",
+    "volume": "0",
+    "amount": "0"
+  },
+  {
+    "name":"Unsettled",
+    "volume": "0",
+    "amount": "0"
+  }
+]

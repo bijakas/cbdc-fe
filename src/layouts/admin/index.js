@@ -5,13 +5,25 @@ import Footer from "components/footer/FooterAdmin.js";
 import Navbar from "components/navbar/NavbarAdmin.js";
 import Sidebar from "components/sidebar/Sidebar.js";
 import { SidebarContext } from "contexts/SidebarContext";
-import React, { useState } from "react";
-import { Redirect, Route, Switch } from "react-router-dom";
-import routes from "routes.js";
+import React, { useState , useContext} from "react";
+import { Redirect, Route, Switch, useHistory } from "react-router-dom";
+import { AuthContext } from "../../AuthContext";
+
+import routesAdmin from "routes.js";
+import routesParties from "routes-parties";
 
 // Custom Chakra theme
 export default function Dashboard(props) {
+  const navigate = useHistory();
+  const { user } = useContext(AuthContext);
   const { ...rest } = props;
+
+
+  if (!user) {
+    navigate.push("/auth/sign-in")
+  }
+  const isAdmin = user ? user.username === "admin" ? true : false : false;
+  const routes = isAdmin ? routesAdmin : routesParties;
   // states and functions
   const [fixed] = useState(false);
   const [toggleSidebar, setToggleSidebar] = useState(false);
@@ -88,6 +100,7 @@ export default function Dashboard(props) {
     }
     return activeNavbar;
   };
+
   const getRoutes = (routes) => {
     return routes.map((prop, key) => {
       if (prop.layout === "/admin") {
@@ -136,7 +149,7 @@ export default function Dashboard(props) {
             <Box>
               <Navbar
                 onOpen={onOpen}
-                logoText={"Horizon UI Dashboard PRO"}
+                logoText={"GARUDA"}
                 brandText={getActiveRoute(routes)}
                 secondary={getActiveNavbar(routes)}
                 message={getActiveNavbarText(routes)}
@@ -155,15 +168,21 @@ export default function Dashboard(props) {
               pt='50px'>
               <Switch>
                 {getRoutes(routes)}
-                <Redirect from='/' to='/admin/default' />
+                {isAdmin ? <Redirect from='/' to='/admin/default' /> : <Redirect from='/' to='/admin/participant' />}
+                {/* <Redirect from='/' to='/admin/default' /> */}
               </Switch>
             </Box>
           ) : null}
           <Box>
             <Footer />
+            <div>
+        {/* <button onClick={pop}>pop !</button> */}
+      </div>
           </Box>
         </Box>
       </SidebarContext.Provider>
+    
+
     </Box>
   );
 }

@@ -21,32 +21,44 @@
 */
 
 // Chakra imports
-import { Box, SimpleGrid } from "@chakra-ui/react";
-import DevelopmentTable from "views/admin/dataTables/components/DevelopmentTable";
-import CheckTable from "views/admin/dataTables/components/CheckTable";
-import ColumnsTable from "views/admin/dataTables/components/ColumnsTable";
+import { Box, SimpleGrid} from "@chakra-ui/react";
 import ComplexTable from "views/admin/dataTables/components/ComplexTable";
 import {
-  columnsDataDevelopment,
-  columnsDataCheck,
-  columnsDataColumns,
-  columnsDataComplex,
+  columnsDataMonitoring
 } from "views/admin/dataTables/variables/columnsData";
-import tableDataDevelopment from "views/admin/dataTables/variables/tableDataDevelopment.json";
-import tableDataCheck from "views/admin/dataTables/variables/tableDataCheck.json";
-import tableDataColumns from "views/admin/dataTables/variables/tableDataColumns.json";
-import tableDataComplex from "views/admin/dataTables/variables/tableDataComplex.json";
+//import tableDataMonitoring from "views/admin/dataTables/variables/tableDataMonitoring.json";
 import React from "react";
+import { useQueries } from "@tanstack/react-query";
+import axios from 'axios';
+
 
 export default function Settings() {
-  // Chakra Color Mode
+  const hostAddress = localStorage.getItem('host')
+
+  const [tableSummary] = useQueries({
+    queries: [
+      {
+        refetchInterval: 4000,
+        queryKey: ['posts'],
+        queryFn: () =>
+          axios
+            .get(`${hostAddress}/transaction-history`)
+            .then((res) => res.data),
+      }
+    ],
+  });
+
+  if (tableSummary.isLoading) return 'Loading data...';
+  if (tableSummary.error)
+    return 'An error has occurred: ' + tableSummary.error.message;
+  //Chakra Color Mode
   return (
     <Box pt={{ base: "130px", md: "80px", xl: "80px" }}>
       <SimpleGrid
         mb='20px'
-        columns={{ sm: 1, md: 2 }}
+        columns={{ sm: 1, md: 1 }}
         spacing={{ base: "20px", xl: "20px" }}>
-        <DevelopmentTable
+        {/* <DevelopmentTable
           columnsData={columnsDataDevelopment}
           tableData={tableDataDevelopment}
         />
@@ -54,12 +66,23 @@ export default function Settings() {
         <ColumnsTable
           columnsData={columnsDataColumns}
           tableData={tableDataColumns}
-        />
+        /> */}
         <ComplexTable
-          columnsData={columnsDataComplex}
-          tableData={tableDataComplex}
+          columnsData={columnsDataMonitoring}
+          tableData={tableSummary.data}
         />
       </SimpleGrid>
+      {/* <Grid
+      h='200px'
+      templateRows='repeat(2, 1fr)'
+      templateColumns='repeat(5, 1fr)'
+      gap={4}
+    >
+      <GridItem rowSpan={2} colSpan={1} bg='tomato' />
+      <GridItem colSpan={2} bg='papayawhip' />
+      <GridItem colSpan={2} bg='papayawhip' />
+      <GridItem colSpan={4} bg='tomato' />
+    </Grid> */}
     </Box>
   );
 }

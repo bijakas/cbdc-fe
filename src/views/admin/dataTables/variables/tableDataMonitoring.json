@@ -1,0 +1,62 @@
+[
+    {
+        "reference": "Transaction",
+        "date": "10/04/2023",
+        "amount": "10000000",
+        "currency": "IDR",
+        "dr_bank": "INDOIDJA",
+        "cr_bank": "BMRIIDJA",
+        "tx_type": "Issuance",
+        "status": "Settled"
+    },
+    {
+        "reference": "Transaction",
+        "date": "10/04/2023",
+        "amount": "10000000",
+        "currency": "IDR",
+        "dr_bank": "INDOIDJA",
+        "cr_bank": "BMRIIDJA",
+        "tx_type": "Issuance",
+        "status": "Settled"
+    },
+    {
+        "reference": "Transaction",
+        "date": "10/04/2023",
+        "amount": "10000000",
+        "currency": "IDR",
+        "dr_bank": "INDOIDJA",
+        "cr_bank": "BMRIIDJA",
+        "tx_type": "Issuance",
+        "status": "Settled"
+    },
+    {
+        "reference": "Transaction",
+        "date": "10/04/2023",
+        "amount": "10000000",
+        "currency": "IDR",
+        "dr_bank": "INDOIDJA",
+        "cr_bank": "BMRIIDJA",
+        "tx_type": "Issuance",
+        "status": "Settled"
+    },
+    {
+        "reference": "Transaction",
+        "date": "10/04/2023",
+        "amount": "10000000",
+        "currency": "IDR",
+        "dr_bank": "INDOIDJA",
+        "cr_bank": "BMRIIDJA",
+        "tx_type": "Issuance",
+        "status": "Settled"
+    },
+    {
+        "reference": "Transaction",
+        "date": "10/04/2023",
+        "amount": "10000000",
+        "currency": "IDR",
+        "dr_bank": "INDOIDJA",
+        "cr_bank": "BMRIIDJA",
+        "tx_type": "Issuance",
+        "status": "Settled"
+    }
+]
