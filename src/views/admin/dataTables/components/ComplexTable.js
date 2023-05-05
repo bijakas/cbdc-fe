@@ -10,6 +10,7 @@ import {
   Thead,
   Tr,
   useColorModeValue,
+  Tooltip
 } from "@chakra-ui/react";
 import React, { useMemo } from "react";
 import {
@@ -22,6 +23,7 @@ import {
 // Custom components
 import Card from "components/card/Card";
 import Menu from "components/menu/MainMenu";
+import { formatRupiah } from "Utils";  
 
 // Assets
 import { MdCheckCircle, MdCancel, MdOutlineError } from "react-icons/md";
@@ -49,7 +51,7 @@ export default function ColumnsTable(props) {
     prepareRow,
     initialState,
   } = tableInstance;
-  initialState.pageSize = 5;
+  initialState.pageSize = 100;
 
   const textColor = useColorModeValue("secondaryGray.900", "white");
   const borderColor = useColorModeValue("gray.200", "whiteAlpha.100");
@@ -115,19 +117,19 @@ export default function ColumnsTable(props) {
                             cell.value === "Approved"
                               ? "green.500"
                               : cell.value === "Disable"
-                              ? "red.500"
-                              : cell.value === "Error"
-                              ? "orange.500"
-                              : null
+                                ? "red.500"
+                                : cell.value === "Error"
+                                  ? "orange.500"
+                                  : null
                           }
                           as={
                             cell.value === "Approved"
                               ? MdCheckCircle
                               : cell.value === "Disable"
-                              ? MdCancel
-                              : cell.value === "Error"
-                              ? MdOutlineError
-                              : null
+                                ? MdCancel
+                                : cell.value === "Error"
+                                  ? MdOutlineError
+                                  : null
                           }
                         />
                         <Text color={textColor} fontSize='sm' fontWeight='700'>
@@ -152,18 +154,29 @@ export default function ColumnsTable(props) {
                         />
                       </Flex>
                     );
+                  } else if (cell.column.Header.toString().toUpperCase() === "AMOUNT") {
+                    data =
+                    <Tooltip label={cell.value} fontSize='md'>
+                    <Text color={textColor} fontSize='sm' fontWeight='700'>
+                      {cell.value.length >= 30 ? "... " + cell.value.substring(cell.value.length - 10, cell.value.length) : formatRupiah(cell.value)}
+                    </Text>
+                  </Tooltip>
                   } else {
-                    data =  <Text color={textColor} fontSize='sm' fontWeight='700'>
-                        {cell.value}
-                      </Text>
+                    data =
+                      <Tooltip label={cell.value} fontSize='md'>
+                        <Text color={textColor} fontSize='sm' fontWeight='700'>
+                          {cell.value.length >= 30 ? "... " + cell.value.substring(cell.value.length - 10, cell.value.length) : cell.value}
+                        </Text>
+                      </Tooltip>
+
                   }
                   return (
                     <Td
                       {...cell.getCellProps()}
                       key={index}
                       fontSize={{ sm: "14px" }}
-                      minW={{ sm: "150px", md: "200px", lg: "auto" }}
-                      maxW={{ sm: "150px", md: "200px", lg: "200px" }}
+                      minW={{ sm: "130px", md: "150", lg: "auto" }}
+                      maxW={{ sm: "130px", md: "150", lg: "200px" }}
                       borderColor='transparent'>
                       {data}
                     </Td>

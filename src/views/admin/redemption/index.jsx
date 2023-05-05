@@ -21,7 +21,14 @@
 */
 
 // Chakra imports
-import { useToast, Box, SimpleGrid, FormControl, FormLabel, Text, Flex, Divider, Select, Input, Stack, Textarea, InputLeftElement, InputGroup, InputRightElement, Button, NumberInput, NumberInputField, NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper } from "@chakra-ui/react";
+import {
+    Box, SimpleGrid, FormControl, FormLabel, Text, Flex, Divider, Select, Input, Stack, Textarea, Button, NumberInput, NumberInputField, NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper, AlertDialog,
+    AlertDialogBody,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogContent,
+    AlertDialogOverlay, AlertDialogCloseButton, useDisclosure, Spinner, Progress
+} from "@chakra-ui/react";
 //import { Select, Option } from "@material-tailwind/react";
 
 import { ToastContainer, toast } from 'react-toastify';
@@ -33,7 +40,6 @@ import React from "react";
 // import tableDataStatIndices from "views/admin/dataTables/variables/tableDataStatIndices.json";
 // import ComplexTable from "views/admin/dataTables/components/ComplexTable";
 import Card from "components/card/Card.js";
-import Toast from "components/toast/Toast.js";
 
 
 // import {
@@ -53,9 +59,9 @@ import Toast from "components/toast/Toast.js";
 import { useState } from "react";
 // import { HashRouter, Route, Switch, useHistory } from "react-router-dom";
 // import { AuthContext } from "../../../AuthContext";
-import Toastify from 'toastify-js'
-import "toastify-js/src/toastify.css"
-
+import showAjaxLoader from "Utils";
+import { useQueries } from "@tanstack/react-query";
+import axios from 'axios';
 
 export default function Redemption() {
 
@@ -63,8 +69,23 @@ export default function Redemption() {
     const [amount, setAmount] = useState(0);
     const [date, setDate] = useState((new Date()).toLocaleDateString('en-CA'));
     // const [errmessage, setErrmessage] = React.useState("");
+    const [tableSummary] = useQueries({
+        queries: [
+            {
+                refetchInterval: 4000,
+                queryKey: ['dashboard'],
+                queryFn: () =>
+                    axios
+                        .get(`${hostAddress}/get-participant-dashboard`)
+                        .then((res) => res.data),
+            },
+        ],
+    });
 
-
+    const { isOpen, onOpen, onClose } = useDisclosure()
+    const cancelRef = React.useRef()
+    const [message, setMessage] = useState("");
+    const [loading, setLoading] = useState(false);
     const sendRedemptionRequest = (amount) => {
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
@@ -77,51 +98,75 @@ export default function Redemption() {
             .then(response => response.json())
             .then(result => {
                 // const resObj = JSON.parse(result);
-                if (result.statusCode === 200){
-                    Toastify({
-                        text: "Permintaan redemtion berhasil dikirim",
-                        duration: 3000,
-                        style: {
-                            background: "linear-gradient(to right, #00b09b, #96c93d)",
-                        }
-                    }).showToast()
+                //if (result.statusCode === 200) {
+                    setMessage("Permintaan redemtion berhasil dikirim")
+                    showAjaxLoader("Permintaan redemtion berhasil dikirim", "success")
                     setAmount(0);
-                } else {
-                    Toastify({
-                        text: result.statusMessage,
-                        duration: 3000,
-                    }).showToast();
-                    setAmount(0);
-                }
-                
+               // } else {
+                //     setMessage(result.statusMessage)
+                //     showAjaxLoader(result.statusMessage, "success")
+                //     setAmount(0);
+                // }
+                setLoading(false);
             })
             .catch(error => {
                 console.log('error', error);
-                Toastify({
-                    text: "transaksi redemption gagal dilakukan",
-                    duration: 3000,
-                    style: {
-                        background: "red",
-                    }
-                }).showToast();
+                showAjaxLoader("transaksi redemption gagal dilakukan", "error")
+                setLoading(false);
             });
     }
     const handleSubmit = (event) => {
         event.preventDefault();
-        if(amount<=0){
-            Toastify({
-                text: "Jumlah amount harus lebih besar dari 0",
-                duration: 3000,
-                style: {
-                    background: "red",
-                }
-            }).showToast();
+        if (amount <= 0) {
+            showAjaxLoader("Jumlah amount harus lebih besar dari 0", "error")
         } else {
+            setLoading(true);
+            onOpen();
             sendRedemptionRequest(amount);
         }
     };
+    if (tableSummary.isLoading) return <Spinner />;
+        if (tableSummary.error)
+            return 'An error has occurred: ' + tableSummary.error.message;
     return (
         <Box pt={{ base: "130px", md: "80px", xl: "80px" }}>
+            <AlertDialog
+                motionPreset='slideInBottom'
+                leastDestructiveRef={cancelRef}
+                onClose={onClose}
+                isOpen={isOpen}
+                isCentered
+            >
+                <AlertDialogOverlay />
+                <AlertDialog
+                    motionPreset="slideInBottom"
+                    leastDestructiveRef={cancelRef}
+                    onClose={onClose}
+                    isOpen={isOpen}
+                    isCentered
+                    size={"sm"}
+                >
+                    <AlertDialogOverlay />
+                    <AlertDialogContent >
+                        <Box align="center" alignContent={"stretch"} alignItems={"stretch"}>
+                            <AlertDialogBody>
+                                {loading ? <Spinner
+                                    thickness='4px'
+                                    speed='0.65s'
+                                    emptyColor='gray.200'
+                                    color='blue.500'
+                                    size='xl'
+                                /> : message}
+                            </AlertDialogBody>
+                        </Box>
+                        {!loading ? <AlertDialogFooter>
+                            <Button ref={cancelRef} onClick={onClose}>
+                                Ok
+                            </Button>
+                        </AlertDialogFooter> : null}
+                    </AlertDialogContent>
+                </AlertDialog>
+            </AlertDialog>
             <SimpleGrid
                 mb='20px'
                 columns={{ sm: 1, md: 1, xl: 2 }}
@@ -133,7 +178,7 @@ export default function Redemption() {
                                 <FormLabel htmlFor="first-name" fontWeight={'normal'}>
                                     Available Balance
                                 </FormLabel>
-                                <Input id="first-name" defaultValue={"100000000000"} readOnly />
+                                <Input id="first-name" defaultValue= {tableSummary.data.currentBalance} readOnly />
                             </FormControl>
 
                             <FormControl mr="5%" isRequired>

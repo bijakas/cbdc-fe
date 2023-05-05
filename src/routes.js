@@ -45,20 +45,20 @@ const routesAdmin = [
     path: "/monitoring",
     component: Monitoring,
   },
-  {
-    name: "New Redemption Request​",
-    layout: "/admin",
-    icon: <Icon as={MdDeleteSweep} width='20px' height='20px' color='inherit' />,
-    path: "/redemption",
-    component: Redemption,
-  },
-  {
-    name: "New Single Credit Transfer",
-    layout: "/admin",
-    icon: <Icon as={MdShuffleOn} width='20px' height='20px' color='inherit' />,
-    path: "/transfer",
-    component: Transfer,
-  },
+//  {
+//    name: "New Redemption Request​",
+//    layout: "/admin",
+//    icon: <Icon as={MdDeleteSweep} width='20px' height='20px' color='inherit' />,
+//    path: "/redemption",
+//    component: Redemption,
+//  },
+//  {
+//    name: "New Single Credit Transfer",
+//    layout: "/admin",
+//    icon: <Icon as={MdShuffleOn} width='20px' height='20px' color='inherit' />,
+//    path: "/transfer",
+//    component: Transfer,
+//  },
 
   {
     name: "Issuance",

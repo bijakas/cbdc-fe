@@ -21,48 +21,35 @@
 */
 
 // Chakra imports
-import { useToast, Box, SimpleGrid, FormControl, FormLabel, Text, Flex, Divider, Select, Input, Stack, Textarea, InputLeftElement, InputGroup, InputRightElement, Button, NumberInput, NumberInputField, NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper } from "@chakra-ui/react";
+import {
+    Box, SimpleGrid, FormControl, FormLabel, Text, Flex, Divider, Select, Input, Stack, Textarea, Button, NumberInput, NumberInputField, NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper, Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalFooter,
+    ModalBody,
+    ModalCloseButton, useDisclosure, Spinner, Alert, AlertIcon, AlertTitle, AlertDescription, CloseButton
+} from "@chakra-ui/react";
 //import { Select, Option } from "@material-tailwind/react";
 
-import { ToastContainer, toast } from 'react-toastify';
+import showToast  from "Utils";
+import showAjaxLoader  from "Utils";
+
 // import 'react-toastify/dist/ReactToastify.css';
 
 // Assets
 import React from "react";
-
-// import tableDataStatIndices from "views/admin/dataTables/variables/tableDataStatIndices.json";
-// import ComplexTable from "views/admin/dataTables/components/ComplexTable";
 import Card from "components/card/Card.js";
-// import Toast from "components/toast/Toast.js";
-
-
-// import {
-//     columnsDataStatIndices,
-// } from "views/admin/dataTables/variables/columnsData";
-
-// import LineChart from "components/charts/LineChart";
-// import BarChart from "components/charts/BarChart";
-
-// import {
-//     lineChartDataTotalSpent,
-//     lineChartOptionsTotalSpent,
-//     barChartOptionsGroupByParticipants,
-//     barChartDataGroupByParticipants,
-
-// } from "variables/charts";
 import { useState } from "react";
-// import { HashRouter, Route, Switch, useHistory } from "react-router-dom";
-// import { AuthContext } from "../../../AuthContext";
-import Toastify from 'toastify-js'
-import "toastify-js/src/toastify.css"
+// import Toastify from 'toastify-js'
+// import "toastify-js/src/toastify.css"
 
 
 export default function Isuance() {
-
     const hostAddress = localStorage.getItem('host');
     const [amount, setAmount] = useState(0);
     const [node, setNode] = useState("");
-
+    const { isOpen, onOpen, onClose } = useDisclosure()
     const sendIssuanceRequest = (amount) => {
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
@@ -71,64 +58,40 @@ export default function Isuance() {
             headers: myHeaders,
             redirect: 'follow'
         };
-        fetch(`${hostAddress}/issuance?amount=${amount}&requester=O=${node}, L=Jakarta, C=ID`, requestOptions)
+        //fetch(`${hostAddress}/issuance?amount=${amount}&requester=O=${node}, L=Jakarta, C=ID`, requestOptions)
+        fetch(`http://10.239.19.74:50005/issuance?amount=${amount}&requester=O=${node}, L=Jakarta, C=ID`, requestOptions)
             .then(response => response.json())
             .then(result => {
                 // const resObj = JSON.parse(result);
-                if (result.statusCode === 200){
-                    Toastify({
-                        text: "Permintaan issuance berhasil dikirim",
-                        duration: 3000,
-                        style: {
-                            background: "linear-gradient(to right, #00b09b, #96c93d)",
-                        }
-                    }).showToast()
-                    setAmount(0);
-                } else {
-                    Toastify({
-                        text: result.statusMessage,
-                        duration: 3000,
-                    }).showToast();
-                    setAmount(0);
-                }
-                
+                               showToast("Permintaan issuance berhasil dikirim", "success");
+                                    setAmount(0);
+//                 if (result.statusCode === 200) {
+//                     showToast("Permintaan issuance berhasil dikirim", "success");
+//                     setAmount(0);
+//                 } else {
+//                     showToast(result.statusMessage, "error");
+//                     setAmount(0);
+//                 }
             })
             .catch(error => {
                 console.log('error', error);
-                Toastify({
-                    text: "transaksi issuance gagal dilakukan",
-                    duration: 3000,
-                    style: {
-                        background: "red",
-                    }
-                }).showToast();
+                showToast("transaksi issuance gagal dilakukan");
             });
     }
     const handleSubmit = (event) => {
         event.preventDefault();
-        if(amount<=0){
-            Toastify({
-                text: "Jumlah amount harus lebih besar dari 0",
-                duration: 3000,
-                style: {
-                    background: "red",
-                }
-            }).showToast();
-        } else if(node === ""){
-            Toastify({
-                text: "Mohon memilih satu recipient",
-                duration: 3000,
-                style: {
-                    background: "red",
-                }
-            }).showToast();
-        } 
-         else {
+        if (amount <= 0) {
+            showToast("Jumlah amount harus lebih besar dari 0", "error");
+        } else if (node === "") {
+            showToast("Mohon memilih satu recipient", "error");
+        }
+        else {
             sendIssuanceRequest(amount);
         }
     };
     return (
         <Box pt={{ base: "130px", md: "80px", xl: "80px" }}>
+            {showAjaxLoader}
             <SimpleGrid
                 mb='20px'
                 columns={{ sm: 1, md: 1, xl: 2 }}
@@ -161,15 +124,15 @@ export default function Isuance() {
                                 </Flex>
                             </FormControl>
                             <FormControl mr="5%">
-                            <FormLabel htmlFor="first-name" fontWeight={'normal'}>
-                                Sender’s Correspondent
+                                <FormLabel htmlFor="first-name" fontWeight={'normal'}>
+                                    Sender’s Correspondent
 
-                            </FormLabel>
-                            <Select placeholder='Select' onChange={(e) => setNode(e.target.value)}>
-                                <option value='BMRIIDJA'>BMRIIDJA</option>
-                                <option value='CENAIDJA'>CENAIDJA</option>
-                            </Select>
-                        </FormControl>
+                                </FormLabel>
+                                <Select placeholder='Select' onChange={(e) => setNode(e.target.value)}>
+                                    <option value='BMRIIDJA'>BMRIIDJA</option>
+                                    <option value='CENAIDJA'>CENAIDJA</option>
+                                </Select>
+                            </FormControl>
 
 
 
@@ -199,7 +162,7 @@ export default function Isuance() {
     >
       Show Toast
     </Button> */}
-                                <ToastContainer />
+                               
 
 
                             </Flex>

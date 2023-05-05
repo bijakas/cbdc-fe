@@ -21,19 +21,38 @@
 */
 
 // Chakra imports
-import { Box, SimpleGrid, FormControl, FormLabel, Text, Flex, Divider, Select, Input, Stack, Textarea, Button, NumberInput, NumberInputField, NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper } from "@chakra-ui/react";
+import {
+    Box, SimpleGrid, FormControl, FormLabel, Text, Flex, Divider, Select, Input, Stack, Textarea, Button, NumberInput, NumberInputField, NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper,
+    AlertDialog,
+    AlertDialogBody,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogContent,
+    AlertDialogOverlay, AlertDialogCloseButton, useDisclosure, Spinner, Progress
+} from "@chakra-ui/react";
 
 // Assets
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import Card from "components/card/Card.js";
-import Toastify from 'toastify-js'
-import "toastify-js/src/toastify.css"
+import { AuthContext } from "../../../AuthContext";
+import showAjaxLoader from "Utils";
 
 export default function Transfer() {
     const defaultValue = (new Date()).toLocaleDateString('en-CA');
     const hostAddress = localStorage.getItem('host');
+    const { user, allowwedUsers } = useContext(AuthContext);
     const [amount, setAmount] = useState(0);
+    const { isOpen, onOpen, onClose } = useDisclosure()
+    const cancelRef = React.useRef()
     const [receiver, setReceiver] = useState("");
+    const [message, setMessage] = useState("");
+    const [loading, setLoading] = useState(false);
+    let selects = []
+    let username = ''
+    if (user){
+        selects = allowwedUsers.filter(item => item !== user.username)
+        username = user.username
+    }
     const sendRedemptionRequest = (amount) => {
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
@@ -42,88 +61,94 @@ export default function Transfer() {
             headers: myHeaders,
             redirect: 'follow'
         };
-        fetch(`${hostAddress}/transfer-with-priority?amount=${amount}&receiver=O=${receiver}, L=Jakarta, C=ID&priority=3`, requestOptions)
+        setLoading(true);
+        onOpen();
+        fetch(`${hostAddress}/transfer-with-priority?amount=${amount}&receiver=O=${receiver.toUpperCase()}, L=Jakarta, C=ID&priority=3`, requestOptions)
             .then(response => response.json())
             .then(result => {
-                // const resObj = JSON.parse(result);
                 if (result.statusCode === 200) {
-                    Toastify({
-                        text: "Permintaan redemtion berhasil dikirim",
-                        duration: 3000,
-                        style: {
-                            background: "linear-gradient(to right, #00b09b, #96c93d)",
-                        }
-                    }).showToast();
+                    showAjaxLoader("Permintaan transfer berhasil dikirim", "success")
+                    setMessage("Permintaan transfer berhasil dikirim")
                     setAmount(0);
                     setReceiver("");
                 } else {
-                    Toastify({
-                        text: result.statusMessage,
-                        duration: 3000,
-                        style: {
-                            background: "red",
-                        }
-                    }).showToast()
+                    showAjaxLoader("Permintaan transfer berhasil dikirim", "success")
+                    setMessage("Permintaan transfer berhasil dikirim")
                 }
-
+                setLoading(false);
             })
             .catch(error => {
                 console.log('error', error);
-                Toastify({
-                    text: "Redemption failed",
-                    duration: 3000,
-                    style: {
-                        background: "red",
-                    }
-                }).showToast();
+                onOpen();
+                showAjaxLoader("proses transfer gagal", "error")
+                setLoading(false);
             });
-       
     }
     const handleSubmit = (event) => {
         event.preventDefault();
-        if(receiver === ""){
-            Toastify({
-                text: "Mohon pilih coresponder",
-                duration: 3000,
-                style: {
-                    background: "red",
-                }
-            }).showToast();
+        if (receiver === "") {
+            showAjaxLoader("Mohon pilih account institution", "error")
         }
-        if(amount<=0){
-            Toastify({
-                text: "Jumlah amount harus lebih besar dari 0",
-                duration: 3000,
-                style: {
-                    background: "red",
-                }
-            }).showToast();
+        if (amount <= 0) {
+            showAjaxLoader("Jumlah amount harus lebih besar dari 0", "error")
         } else {
+            setLoading(true);
             sendRedemptionRequest(amount);
         }
-        // toast({
-        //     title: 'Account created.',
-        //     description: "We've created your account for you.",
-        //     status: 'success',
-        //     duration: 9000,
-        //     isClosable: true,
-        //   })
     };
 
     return (
         <Box pt={{ base: "130px", md: "80px", xl: "80px" }}>
+            <AlertDialog
+                motionPreset='slideInBottom'
+                leastDestructiveRef={cancelRef}
+                onClose={onClose}
+                isOpen={isOpen}
+                isCentered
+            >
+                <AlertDialogOverlay />
+                <AlertDialog
+                    motionPreset="slideInBottom"
+                    leastDestructiveRef={cancelRef}
+                    onClose={onClose}
+                    isOpen={isOpen}
+                    isCentered
+                    size={"sm"}
+                >
+                    <AlertDialogOverlay />
+                    <AlertDialogContent >
+                        <Box align="center" alignContent={"stretch"} alignItems={"stretch"}>
+                            <AlertDialogBody>
+                                {loading ? <Spinner
+                                    thickness='4px'
+                                    speed='0.65s'
+                                    emptyColor='gray.200'
+                                    color='blue.500'
+                                    size='xl'
+                                /> : message}
+                            </AlertDialogBody>
+                        </Box>
+                        {!loading ? <AlertDialogFooter>
+                            <Button ref={cancelRef} onClick={onClose}>
+                                Ok
+                            </Button>
+                        </AlertDialogFooter> : null}
+                    </AlertDialogContent>
+                </AlertDialog>
+            </AlertDialog>
+
             <form onSubmit={handleSubmit}>
                 <Card><SimpleGrid
                     mb='20px'
                     columns={{ sm: 1, md: 1, xl: 2 }}
                     spacing={{ base: "20px", xl: "20px" }}>
                     <Stack spacing={4}>
-                        <FormControl mr="5%">
-                            <FormLabel htmlFor="first-name" fontWeight={'normal'}>
-                                Reference
-                            </FormLabel>
-                            <Input id="first-name" placeholder="First name" />
-                        </FormControl>
+{/*                         <FormControl mr="5%" > */}
+{/*                             <FormLabel htmlFor="first-name" fontWeight={'normal'}> */}
+{/*                                 Reference */}
+{/*                             </FormLabel> */}
+{/*                             <Input id="first-name" placeholder="First name" /> */}
+{/*                         </FormControl> */}
 
                         <FormControl mr="5%">
                             <FormLabel htmlFor="first-name" fontWeight={'normal'}>
@@ -150,12 +175,14 @@ export default function Transfer() {
                         <FormControl mr="5%">
                             <FormLabel htmlFor="first-name" fontWeight={'normal'}>
                                 Sender’s Correspondent
-
                             </FormLabel>
-                            <Select placeholder='Select' onChange={(e) => setReceiver(e.target.value)}>
+                            {/* <Select placeholder='Select' onChange={(e) => setReceiver(e.target.value)}>
                                 <option value='BMRIIDJA'>BMRIIDJA</option>
                                 <option value='CENAIDJA'>CENAIDJA</option>
-                            </Select>
+                            </Select> */}
+                            <Text fontWeight={'bold'}>
+                                <Input id="first-name" placeholder="First name" value={username.toUpperCase()} readOnly={true} />
+                            </Text>
                         </FormControl>
 
                         <Text fontSize={{ sm: "xl", lg: "lg", xl: "xl" }} fontWeight='bold'>
@@ -202,10 +229,10 @@ export default function Transfer() {
                             <FormLabel htmlFor="first-name" fontWeight={'normal'}>
                                 Account with Institution
                             </FormLabel>
-                            <Select placeholder='Select'>
-                                <option value='CENAIDJA'>CENAIDJA – PT. BANK CENTRAL ASIA </option>
-                                {/* <option value='option2'>Option 2</option>
-                        <option value='option3'>Option 3</option> */}
+                            <Select placeholder='Select' onChange={(e) => setReceiver(e.target.value)}>
+                                {selects.map((i) =>
+                                    <option value={i.toUpperCase()}>{i.toUpperCase()}</option>
+                                )}
                             </Select>
                         </FormControl>
                         <Text fontSize={{ sm: "xl", lg: "lg", xl: "xl" }} fontWeight='bold'>

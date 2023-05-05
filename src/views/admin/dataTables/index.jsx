@@ -21,7 +21,7 @@
 */
 
 // Chakra imports
-import { Box, SimpleGrid} from "@chakra-ui/react";
+import { Box, SimpleGrid, Spinner } from "@chakra-ui/react";
 import ComplexTable from "views/admin/dataTables/components/ComplexTable";
 import {
   columnsDataMonitoring
@@ -34,7 +34,11 @@ import axios from 'axios';
 
 export default function Settings() {
   const hostAddress = localStorage.getItem('host')
-
+  const apiStatus = (query, components) => {
+    if (query.isLoading) { return <Spinner/>; }
+    if (query.error) { return 'service temporarily not available'; }
+    return components;
+  }
   const [tableSummary] = useQueries({
     queries: [
       {
@@ -43,46 +47,24 @@ export default function Settings() {
         queryFn: () =>
           axios
             .get(`${hostAddress}/transaction-history`)
-            .then((res) => res.data),
+            .then((res) => res.data).catch(error => {
+              throw new Error('Network response was not ok')
+           })
       }
     ],
   });
-
-  if (tableSummary.isLoading) return 'Loading data...';
-  if (tableSummary.error)
-    return 'An error has occurred: ' + tableSummary.error.message;
-  //Chakra Color Mode
   return (
     <Box pt={{ base: "130px", md: "80px", xl: "80px" }}>
       <SimpleGrid
         mb='20px'
         columns={{ sm: 1, md: 1 }}
         spacing={{ base: "20px", xl: "20px" }}>
-        {/* <DevelopmentTable
-          columnsData={columnsDataDevelopment}
-          tableData={tableDataDevelopment}
-        />
-        <CheckTable columnsData={columnsDataCheck} tableData={tableDataCheck} />
-        <ColumnsTable
-          columnsData={columnsDataColumns}
-          tableData={tableDataColumns}
-        /> */}
-        <ComplexTable
+        {apiStatus(tableSummary, <ComplexTable
           columnsData={columnsDataMonitoring}
           tableData={tableSummary.data}
-        />
+        />) }
+
       </SimpleGrid>
-      {/* <Grid
-      h='200px'
-      templateRows='repeat(2, 1fr)'
-      templateColumns='repeat(5, 1fr)'
-      gap={4}
-    >
-      <GridItem rowSpan={2} colSpan={1} bg='tomato' />
-      <GridItem colSpan={2} bg='papayawhip' />
-      <GridItem colSpan={2} bg='papayawhip' />
-      <GridItem colSpan={4} bg='tomato' />
-    </Grid> */}
     </Box>
   );
 }

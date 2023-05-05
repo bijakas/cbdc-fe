@@ -77,7 +77,7 @@ export const barChartOptionsGroupByParticipants = {
     theme: "dark",
   },
   xaxis: {
-    categories: ["BMRIDJA", "CENAIDJA"],
+//    categories: ["BMRIDJA", "CENAIDJA"],
     show: true,
     labels: {
       show: true,
@@ -127,12 +127,12 @@ export const barChartOptionsGroupByParticipants = {
   },
   fill: {
     type: "solid",
-    colors: ["#5E37FF", "#6AD2FF", "#E1E9F8"],
+    colors: ["#2596be", "#8533ff", "#ff4dd2"],
   },
   legend: {
     show: true,
   },
-  colors: ["#5E37FF", "#6AD2FF", "#E1E9F8"],
+  colors: ["#2596be", "#8533ff", "#ff4dd2"],
   dataLabels: {
     enabled: true,
   },
